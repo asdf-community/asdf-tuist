@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for tuist.
 GH_REPO="https://github.com/tuist/tuist"
 TOOL_NAME="tuist"
 TOOL_TEST="tuist --help"
@@ -14,7 +13,6 @@ fail() {
 
 curl_opts=(-fsSL)
 
-# NOTE: You might want to remove this if tuist is not hosted on GitHub releases.
 if [ -n "${GITHUB_API_TOKEN:-}" ]; then
 	curl_opts=("${curl_opts[@]}" -H "Authorization: token $GITHUB_API_TOKEN")
 fi
@@ -41,8 +39,7 @@ download_release() {
 	version="$1"
 	filename="$2"
 
-	# TODO: Adapt the release URL convention for tuist
-	url="$GH_REPO/archive/v${version}.tar.gz"
+	url="$GH_REPO/releases/download/${version}/tuist.zip"
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
