@@ -20,7 +20,8 @@ fi
 list_github_tags_sorted() {
 	git -c 'versionsort.suffix=-beta' ls-remote --tags --refs --sort version:refname "$GH_REPO" |
 		grep -o 'refs/tags/.*' | cut -d/ -f3- |
-		sed 's/^v//' # NOTE: You might want to adapt this sed to remove non-version strings from tags
+		sed 's/^v//' | # NOTE: You might want to adapt this sed to remove non-version strings from tags
+		grep -v "@"    # Filtering out tags with @ tied to non-CLI releases
 }
 
 list_all_versions_sorted() {
