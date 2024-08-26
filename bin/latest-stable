@@ -21,9 +21,14 @@ redirect_url=$(curl "${curl_opts[@]}" "$GH_REPO/releases/latest" | sed -n -e "s|
 version=
 printf "redirect url: %s\n" "$redirect_url" >&2
 if [[ "$redirect_url" == "$GH_REPO/releases" ]]; then
-	version="$(list_all_versions_sorted | tail -n1 | xargs echo)"
+	# Get the latest version excluding those with 'app@' prefix
+	version="$(list_all_versions_sorted | grep -v '^app@' | tail -n1 | xargs echo)"
 else
 	version="$(printf "%s\n" "$redirect_url" | sed 's|.*/tag/v\{0,1\}||')"
+	# Check if the version has 'app@' prefix and fetch an alternative version if it does
+	if [[ "$version" == app@* ]]; then
+		version="$(list_all_versions_sorted | grep -v '^app@' | tail -n1 | xargs echo)"
+	fi
 fi
 
 printf "%s\n" "$version"
